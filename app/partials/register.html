@@ -1,30 +1,160 @@
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-md-2">
-            <!--Sidebar content-->
+    <div class="col-sm-6">
+        <!-- =================================================================== -->
+        <!-- FORM ============================================================== -->
+        <!-- =================================================================== -->
 
-            sidebar content
-        </div>
-        <div class="col-md-3">
-            <!--Body content-->
-            Name: <br/>
-            Password: <br/>
-            Repeat Password: <br/>
+        <form name="userForm" ng-submit="submitForm()" novalidate>
 
-            <button ng-click="register()">Register</button>
-            <p>{{msgStatus}}</p>
+            <!-- NAME -->
+            <div class="form-group" ng-class="{ 'has-error' : userForm.name.$invalid && !userForm.name.$pristine }">
+                <label>Name</label>
+                <input type="text" name="name" class="form-control" ng-model="user.name" required>
 
+                <p ng-show="userForm.name.$invalid && !userForm.name.$pristine" class="help-block">Name is
+                    required.</p>
+            </div>
 
-        </div>
-        <div class="col-md-4">
-            <input type="text" ng-model="txtLogin" ng-focus="clearInitialMessage()"/> <br/>
-            <input type="password" ng-model="txtPass1"/><br/>
-            <input type="password" ng-model="txtPass2"/><br/>
-        </div>
-        <div class="col-md-3">
-            {{msgLogin}}<br/>
-            {{msgPass1}}<br/>
-            {{msgPass2}}<br/>
-        </div>
+            <!-- Password1 -->
+            <div class="form-group"
+                 ng-class="{ 'has-error' : userForm.password1.$invalid && !userForm.password1.$pristine }">
+                <label>Password</label>
+                <input type="password" name="password1" class="form-control" ng-model="user.password1" ng-minlength="4"
+                       ng-maxlength="20">
+
+                <p ng-show="userForm.password1.$error.minlength" class="help-block">Password is too short.</p>
+
+                <p ng-show="userForm.password1.$error.maxlength" class="help-block">Password is too long.</p>
+            </div>
+
+            <!-- password2 -->
+            <div class="form-group" ng-class="{ 'has-error' : userForm.password2.$invalid && !userForm.password2.$pristine }">
+                <label>Repeat password</label>
+                <input type="password" name="password2" class="form-control" ng-model="user.password2" ng-minlength="4"
+                       ng-maxlength="20">
+
+                <p ng-show="userForm.password2.$error.minlength" class="help-block">Password is too short.</p>
+
+                <p ng-show="userForm.password2.$error.maxlength" class="help-block">Password is too long.</p>
+            </div>
+            </p>
+            <p ng-show="serverStatusError" class="help-block">{{registerStatusMessage}}</p>
+            <p ng-show="serverStatusOK" class="alert-success">{{registerStatusMessage}}</p>
+            <button type="submit" class="btn btn-primary" ng-disabled="userForm.$invalid">Submit</button>
+
+        </form>
     </div>
+    <div class="col-sm-6">
+        <!-- =================================================================== -->
+        <!-- VALIDATION TABLES ================================================= -->
+        <!-- =================================================================== -->
+        <div class="row">
+            <div class="col-xs-3">
+                <h3>Form</h3>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td ng-class="{ success: userForm.$valid, danger: userForm.$invalid }">Valid</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.$pristine, danger: !userForm.$pristine }">Pristine</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.$dirty }">Dirty</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-xs-3">
+                <h3>Name</h3>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td ng-class="{ success: userForm.name.$valid, danger: userForm.name.$invalid }">Valid</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.name.$pristine, danger: !userForm.name.$pristine }">Pristine
+                        </td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.name.$dirty }">Dirty</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-xs-3">
+                <h3>password 1</h3>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td ng-class="{ success: userForm.password1.$valid, danger: userForm.password1.$invalid }">Valid</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.password1.$pristine, danger: !userForm.password1.$pristine }">
+                            Pristine
+                        </td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.password1.$dirty }">Dirty</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-xs-3">
+                <h3>password 2</h3>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td ng-class="{ success: userForm.password2.$valid, danger: userForm.password2.$invalid }">Valid</td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.password2.$pristine, danger: !userForm.password2.$pristine }">
+                            Pristine
+                        </td>
+                    </tr>
+                    <tr>
+                        <td ng-class="{ success: userForm.password2.$dirty }">Dirty</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+
+<!--form name="loginForm" ng-controller="RegisterCtrl" novalidate class="form form-horizontal">
+    Name: <br/>
+    Password: <br/>
+    Repeat Password: <br/>
+
+    <button ng-click="register()">Register</button>
+    <p>{{msgStatus}}</p>
+
+    <div class="form-group" ng-class="{ 'has-error' : loginForm.login.$invalid && !loginForm.login.$pristine }">
+        <span class="input-group-addon">Login name</span>
+        <input type="text" ng-minlength="3" ng-model="txtLogin" placeholder="Your login name" class="form-control"
+               required/> <br/>
+        <label>Login</label>
+
+        <p ng-show="loginForm.txtLogin.$invalid && !loginForm.txtLogin.$pristine" class="help-block">You name is
+            required.</p>
+    </div>
+
+    <div class="input-group input-group">
+        <span class="input-group-addon">Password</span>
+        <input type="password" ng-model="txtPass1" class="form-control"/> <br/>
+    </div>
+
+    <div class="input-group input-group">
+        <span class="input-group-addon">Repeat Password</span>
+        <input type="password" ng-model="txtPass2" class="form-control"/> <br/>
+    </div>
+
+    {{msgLogin}}<br/>
+    {{msgPass1}}<br/>
+    {{msgPass2}}<br/>
+</form-->
 </div>

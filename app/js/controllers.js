@@ -26,53 +26,53 @@ phonecatControllers.controller('PhoneDetailCtrl', ['$scope', '$routeParams', '$h
  */
 phonecatControllers.controller('RegisterCtrl', ['$scope', '$routeParams', '$http',
     function($scope, $routeParams, $http) {
+        $scope.serverStatusError = undefined;
+        $scope.serverStatusOK = undefined;
+        $scope.registerStatusMessage = ""; // displayed message
 
-        $scope.txtLoginDefaultMessage = "Please enter a login name";
-        $scope.txtLogin = $scope.txtLoginDefaultMessage;
-        $scope.txtPass1 = "";
-        $scope.txtPass2 = "";
-        $scope.msgLogin = "";
-        $scope.msgPass1 = "";
-        $scope.msgPass2 = "";
-        $scope.msgStatus = "";
 
         $scope.register = function(){
-            $scope.msgLogin = "";
-            $scope.msgPass1 = "";
-            $scope.msgPass2 = "";
-            $scope.msgStatus = "";
-            console.log('register clicked, login='+$scope.txtLogin+', pass1='+$scope.txtPass1+' , pass2='+$scope.txtPass2);
-            console.log('register $scope.txtLogin.length=' + $scope.txtLogin.length);
+            console.log('register clicked, login='+$scope.user.name+',' +
+                'pass1='+$scope.user.password1+' , ' +
+                'pass2='+$scope.user.password2);
+            $scope.serverStatusError = undefined;
+            $scope.serverStatusOK = undefined;
 
-            if ($scope.txtLogin.length <4) {
-                $scope.msgLogin = "Error: Login name must be at least 6 characters!";
-                return;
-            }
-
-            if ($scope.txtPass1 != $scope.txtPass2) {
-                $scope.msgPass2 = "Error: Passwords must match!";
-                return;
-            }
-
-            $http({method: 'GET', url: 'http://localhost:3000/createuser?login='+$scope.txtLogin + '&password='+$scope.txtPass1}).
+            $http({method: 'GET', url: 'http://localhost:3000/createuser?login='+$scope.user.name + '&password='+$scope.user.password1}).
                 success(function(data) {
                     console.log('success: data:' + JSON.stringify( data ));
                     if (data.code == "OK"){
-                        $scope.msgStatus = "You have been registered successfully!"
+                        $scope.serverStatusError = false;
+                        $scope.serverStatusOK = true;
+                        $scope.registerStatusMessage = "You have been successfully registered!"
                     }else
                     {
-                        $scope.msgStatus = "Error registering:"+data.code;
+                        $scope.serverStatusError = true;
+                        $scope.serverStatusOK = false;
+                        $scope.registerStatusMessage = "Error registering:"+data.code;
                     }
 
                 }).
                 error(function(data) {
                     console.log('error: data:' + JSON.stringify( data ));
-                    $scope.msgStatus = "Unknown Error during registering:" + JSON.stringify(data);
+                    $scope.serverStatusError = true;
+                    $scope.serverStatusOK = false;
+                    $scope.registerStatusMessage = "Error registering:"+JSON.stringify( data );
                 });
         }
 
-        $scope.clearInitialMessage = function(){
-            if ($scope.txtLogin == $scope.txtLoginDefaultMessage ) $scope.txtLogin = "";
-        }
+        //////////////////////////////
+
+        // function to submit the form after all validation has occurred
+        $scope.submitForm = function() {
+
+            // check to make sure the form is completely valid
+            if ($scope.userForm.$valid) {
+                $scope.register();
+            }
+
+        };
+
+
     }]);
 
